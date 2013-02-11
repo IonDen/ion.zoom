@@ -1,0 +1,33 @@
+/* Ion.Zoom
+// css version 1.0.1
+// by Denis Ineshin | ionden.com
+// ===================================================================================================================*/
+
+/* =====================================================================================================================
+// Zoom */
+
+.ion-zoom-preloader {
+    position: absolute;
+    top: -9999px; left: -9999px;
+    width: 30px; height: 30px;
+    margin: -15px 0 0 -15px;
+    border-radius: 50%;
+    background: #fff url(../img/ion.zoom.preloader.gif) no-repeat 50% 50%;
+    box-shadow: 0 0 3px rgba(0,0,0,0.3);
+    cursor: pointer;
+    z-index: 998;
+}
+.ion-zoom-image {
+    position: absolute; display: block;
+    top: -9999px; left: -9999px;
+    background: #222;
+    box-shadow: 0 0 10px rgba(0,0,0,0.8);
+    cursor: pointer;
+    outline: none !important;
+    z-index: 999;
+}
+    .ion-zoom-image img {
+        display: block !important;
+        border: 0 !important;
+        padding: 0 !important;
+    }
