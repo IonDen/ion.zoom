@@ -12,7 +12,7 @@ Download: <a href="http://ionden.com/a/plugins/ion.zoom/ion.zoom-1.0.zip">ion.zo
 ion.zoom — easy image lightbox jQuery plugin for small galleries. Allow to zoom images at place.<br />
 Also supprort keyboard controls with ESC, LEFT and RIGHT button.<br />
 Works on touch screen devices (iPhone, iPad, etc.).<br />
-Ion.Zoom is freely distributed under <a href="http://ionden.com/a/licence.html" target="_blank">MIT licence</a>.
+Ion.Zoom is freely distributed under <a href="http://ionden.com/a/licence-en.html" target="_blank">MIT licence</a>.
 
 
 ## Dependencies
