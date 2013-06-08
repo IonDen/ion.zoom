@@ -1,5 +1,5 @@
 ﻿// Ion.Zoom
-// version 1.0.29
+// version 1.2.63
 // © 2013 Denis Ineshin | IonDen.com
 //
 // Project page:    http://ionden.com/a/plugins/ion.zoom/
@@ -10,167 +10,262 @@
 // =====================================================================================================================
 
 (function($){
-    $.fn.ionZoom = function(options){
-        var gallery = this;
-        var container = null;
-        var image = null;
+    var pluginCount = 0;
 
-        var settings = $.extend({
-            //
-        }, options);
+    var zoomHTML =  '<div class="ion-zoom-preloader"></div>';
+        zoomHTML += '<div class="ion-zoom-image">';
+        zoomHTML += '<div class="ion-zoom-close"><div>&times;</div></div>';
+        zoomHTML += '<div class="ion-zoom-prev"><div></div></div>';
+        zoomHTML += '<div class="ion-zoom-next"><div></div></div>';
+        zoomHTML += '</div>';
 
-        var func = {
-            init: function(){
-                var self = this;
+    var $body = $(document.body),
+        $window = $(window),
+        $preloader,
+        $container,
+        $prev,
+        $next;
 
-                this.isOpend = false;
-                this.isAnimate = false;
-                this.current = null;
-                this.link = "";
-                this.newCurrent = null;
-                this.newLink = "";
-                this.num = gallery.length;
+    $body.append(zoomHTML);
+    $preloader = $("div.ion-zoom-preloader");
+    $container = $("div.ion-zoom-image");
+    $prev = $("div.ion-zoom-prev");
+    $next = $("div.ion-zoom-next");
 
-                this.currentSize = {};
-                this.body = $(document.body);
+    var gal = [],
+        anyOpen = false,
+        whichOpen = 0;
 
+
+    var methods = {
+        init: function(options){
+            var gallery = this;
+            if(gallery.data("isActive")) {
+                return;
+            }
+
+            pluginCount = pluginCount + 1;
+            this.pluginCount = pluginCount;
+            gal[this.pluginCount] = this;
+
+            var settings = $.extend({
+                visibleControls: true
+            }, options);
+
+            gallery.each(function(i){
+                $(this).data("isActive", true).data("iznum", i);
+            });
+
+
+            var isOpen = false,
+                isAnimate = false,
+                num = gallery.length,
+                currentSize = {},
+                baseSize = {},
+                currentNum = 0,
+                link,
+                newLink;
+
+            var $current,
+                $newCurrent,
+                $image;
+
+
+
+            // public methods
+            this.closeZoom = function(callback){
+                closeCurrent(false, callback);
+            };
+
+
+            // private methods
+            var bindBase = function(){
                 gallery.on("click", function(e){
                     e.preventDefault();
-                    if(self.isOpend) {
-                        self.newCurrent = $(this);
-                        self.newLink = $(this).prop("href");
-                        self.closeCurrent(true);
+                    var $this = $(this);
+
+                    currentNum = $this.data("iznum");
+
+                    if(isOpen) {
+                        $newCurrent = $this;
+                        newLink = $this.prop("href");
+
+                        closeCurrent(true);
+                    } else if(anyOpen) {
+                        closeOther($this);
                     } else {
-                        self.current = $(this);
-                        self.link = $(this).prop("href");
-                        self.getSize();
+                        $current = $this;
+                        link = $this.prop("href");
+
+                        bindSpec();
+                        getSize();
                     }
                 });
 
-                $(document.body).on("keydown", function(e){
-                    if(e.which == 27 && self.isOpend) { // ESC button
-                        self.closeCurrent();
+                $body.on("keydown", function(e){
+                    if(e.which === 27 && isOpen) { // ESC button
+                        closeCurrent();
                     }
-                    if(e.which == 37 && self.isOpend && !self.isAnimate) { // LEFT button
-                        var prev = self.current.prev();
-                        if(!prev.length) prev = gallery.eq(self.num - 1);
-                        self.newCurrent = prev;
-                        self.newLink = prev.prop("href");
-                        self.closeCurrent(true);
+                    if(e.which === 37 && isOpen && !isAnimate) { // LEFT button
+                        goPrev();
                     }
-                    if(e.which == 39 && self.isOpend && !self.isAnimate) { // RIGHT button
-                        var next = self.current.next();
-                        if(!next.length) next = gallery.eq(0);
-                        self.newCurrent = next;
-                        self.newLink = next.prop("href");
-                        self.closeCurrent(true);
+                    if(e.which === 39 && isOpen && !isAnimate) { // RIGHT button
+                        goNext();
                     }
                 });
+            };
 
-                this.prepare();
-            },
-            prepare: function(){
-                var self = this;
-
-                var _html =  '<div class="ion-zoom-preloader" id="ion-zoom-preloader"></div>';
-                    _html += '<div class="ion-zoom-image" id="ion-zoom-image"></div>';
-                this.body.append(_html);
-
-                this.preloader = $("#ion-zoom-preloader");
-                container = $("#ion-zoom-image");
-
-                container.on("click", function(){
-                    self.closeCurrent();
+            var bindSpec = function(){
+                $container.on("click", function(){
+                    closeCurrent();
                 });
-            },
-            getSize: function(){
-                var _ds = {
-                    linkBorder: parseInt(this.current.css("border-left-width")),
-                    linkPadding: parseInt(this.current.css("padding-left")),
-                    imgBorder: parseInt(this.current.children("img").css("border-left-width")),
-                    imgPadding: parseInt(this.current.children("img").css("padding-left"))
+
+                if(settings.visibleControls) {
+                    $prev.on("click", function(e){
+                        e.stopPropagation();
+                        if(isOpen && !isAnimate){
+                            goPrev();
+                        }
+                    });
+                    $next.on("click", function(e){
+                        e.stopPropagation();
+                        if(isOpen && !isAnimate){
+                            goNext();
+                        }
+                    });
+                }
+            };
+
+            var closeCurrent = function(isNext, callback){
+                if(isNext) {
+                    zoom(baseSize.x, baseSize.y, baseSize.w, baseSize.h, true, true, callback);
+                } else {
+                    zoom(baseSize.x, baseSize.y, baseSize.w, baseSize.h, true, false, callback);
+                }
+            };
+
+            var goPrev = function(){
+                currentNum = currentNum - 1;
+                var prev = gallery.eq(currentNum);
+                if(!prev.length) {
+                    currentNum = num - 1;
+                    prev = gallery.eq(num - 1);
+                }
+                $newCurrent = prev;
+                newLink = prev.prop("href");
+
+                closeCurrent(true);
+            };
+
+            var goNext = function(){
+                currentNum = currentNum + 1;
+                var next = gallery.eq(currentNum);
+                if(!next.length) {
+                    currentNum = 0;
+                    next = gallery.eq(0);
+                }
+                $newCurrent = next;
+                newLink = next.prop("href");
+
+                closeCurrent(true);
+            };
+
+            var getSize = function(){
+                var ds = {
+                    linkBorder: parseInt($current.css("border-left-width")),
+                    linkPadding: parseInt($current.css("padding-left")),
+                    imgBorder: parseInt($current.children("img").css("border-left-width")),
+                    imgPadding: parseInt($current.children("img").css("padding-left"))
                 };
-                var _mod1 = _ds.linkBorder + _ds.linkPadding;
-                var _mod2 = _ds.imgBorder + _ds.imgPadding;
+                var mod1 = ds.linkBorder + ds.linkPadding;
+                var mod2 = ds.imgBorder + ds.imgPadding;
 
-                this.baseSize = {
-                    x: this.current.offset().left + _mod1 + _mod2,
-                    y: this.current.offset().top + _mod1 + _mod2,
-                    w: this.current.width() - (_mod2 * 2),
-                    h: this.current.height() - (_mod2 * 2)
+                baseSize = {
+                    x: $current.offset().left + mod1 + mod2,
+                    y: $current.offset().top + mod1 + mod2,
+                    w: $current.width() - (mod2 * 2),
+                    h: $current.height() - (mod2 * 2)
                 };
 
-                this.showPreloader();
-                this.loadImage();
-            },
-            showPreloader: function(){
-                var _x = this.baseSize.x + (this.baseSize.w / 2);
-                var _y = this.baseSize.y + (this.baseSize.h / 2);
-                this.preloader.css("top", _y).css("left", _x);
-            },
-            loadImage: function(){
-                var self = this;
+                showPreloader();
+                loadImage();
+            };
 
-                container.append('<img src="' + this.link + '" />');
-                image = container.children("img");
+            var showPreloader = function(){
+                var x = baseSize.x + (baseSize.w / 2);
+                var y = baseSize.y + (baseSize.h / 2);
+                $preloader.css("top", y).css("left", x);
+            };
 
-                image.on("load", function(){
-                    self.currentSize.w = image.width();
-                    self.currentSize.h = image.height();
-                    self.placeImage();
+            var loadImage = function(){
+                $container.append('<img src="' + link + '" />');
+                $image = $container.children("img");
+
+                $image.on("load", function(){
+                    currentSize.w = $image.width();
+                    currentSize.h = $image.height();
+
+                    placeImage();
                 });
-            },
-            placeImage: function(){
-                this.preloader.css("top","-9999px").css("left","-9999px");
-                image.width(this.baseSize.w).height(this.baseSize.h);
-                container.width(this.baseSize.w).height(this.baseSize.h);
-                container.css("left", this.baseSize.x).css("top", this.baseSize.y);
+            };
 
-                this.prepareZoom();
-            },
-            prepareZoom: function(){
-                var screenWidth = $(window).innerWidth() - 40;
-                var screenHeight = $(window).innerHeight() - 40;
-                var scrollTop = $(window).scrollTop();
-                var ratio = this.currentSize.h / this.currentSize.w;
+            var placeImage = function(){
+                $preloader.css("top","-9999px").css("left","-9999px");
+                $image.width(baseSize.w).height(baseSize.h);
+                $container.width(baseSize.w).height(baseSize.h);
+                $container.css("left", baseSize.x).css("top", baseSize.y);
 
-                var _x = this.baseSize.x + (this.baseSize.w / 2) - (this.currentSize.w / 2);
-                var _y = this.baseSize.y + (this.baseSize.h / 2) - (this.currentSize.h / 2);
+                prepareZoom();
+            };
 
-                var _w = this.currentSize.w;
-                var _h = this.currentSize.h;
+            var prepareZoom = function(){
+                var screenWidth = $window.innerWidth() - 40;
+                var screenHeight = $window.innerHeight() - 40;
+                var scrollTop = $window.scrollTop();
+                var ratio = currentSize.h / currentSize.w;
 
-                if(_w > screenWidth) {
-                    _w = screenWidth;
-                    _h = screenWidth * ratio;
-                    _x = this.baseSize.x + (this.baseSize.w / 2) - (_w / 2);
+                var x = baseSize.x + (baseSize.w / 2) - (currentSize.w / 2);
+                var y = baseSize.y + (baseSize.h / 2) - (currentSize.h / 2);
+
+                var w = currentSize.w;
+                var h = currentSize.h;
+
+                if(w > screenWidth) {
+                    w = screenWidth;
+                    h = screenWidth * ratio;
+                    x = baseSize.x + (baseSize.w / 2) - (w / 2);
                 }
-                if(_h > screenHeight) {
-                    _h = screenHeight;
-                    _w = screenHeight / ratio;
-                    _x = this.baseSize.x + (this.baseSize.w / 2) - (_w / 2);
+                if(h > screenHeight) {
+                    h = screenHeight;
+                    w = screenHeight / ratio;
+                    x = baseSize.x + (baseSize.w / 2) - (w / 2);
                 }
-                if(_x + _w > screenWidth) {
-                    _x = screenWidth - _w - 20;
+                if(x + w > screenWidth) {
+                    x = screenWidth - w - 20;
                 }
-                if(_y + _h > 20 + scrollTop + screenHeight) {
-                    _y = scrollTop + screenHeight - _h;
+                if(y + h > 20 + scrollTop + screenHeight) {
+                    y = scrollTop + screenHeight - h;
                 }
 
-                if(_x < 20) _x = 20;
-                if(_y < scrollTop + 20) _y = scrollTop + 20;
+                if(x < 20) {
+                    x = 20;
+                }
+                if(y < scrollTop + 20) {
+                    y = scrollTop + 20;
+                }
 
-                this.zoom(_x, _y, _w, _h, false, false);
-            },
-            closeCurrent: function(isNext){
-                if(isNext) this.zoom(this.baseSize.x, this.baseSize.y, this.baseSize.w, this.baseSize.h, true, true);
-                else this.zoom(this.baseSize.x, this.baseSize.y, this.baseSize.w, this.baseSize.h, true, false);
-            },
-            zoom: function(x, y, w, h, isEnd, isNext){
-                var self = this;
-                this.isAnimate = true;
+                zoom(x, y, w, h, false, false);
+            };
 
-                container.stop().animate(
+            var zoom = function(x, y, w, h, isEnd, isNext, callback){
+                isAnimate = true;
+
+                $container.removeClass("isOpen");
+                if(!settings.visibleControls){
+                    $container.removeClass("noControls");
+                }
+
+                $container.stop().animate(
                     {
                         left: x,
                         top: y,
@@ -179,35 +274,84 @@
                     },
                     {
                         step: function(now, fx){
-                            if(fx.prop == "width") image.width(now + "px");
-                            if(fx.prop == "height") image.height(now + "px");
+                            if(fx.prop === "width") {
+                                $image.width(now + "px");
+                            }
+                            if(fx.prop === "height") {
+                                $image.height(now + "px");
+                            }
                         },
                         duration: 300,
                         complete: function(){
                             if(isEnd) {
-                                self.hideOld();
-                                if(isNext) self.setNew();
+                                hideOld();
+
+                                if(isNext) {
+                                    setNew();
+                                }
+                                if(callback) {
+                                    callback();
+                                }
+                            } else {
+                                $container.addClass("isOpen");
+                                if(!settings.visibleControls){
+                                    $container.addClass("noControls");
+                                }
+
+                                anyOpen = true;
+                                isOpen = true;
+                                whichOpen = gallery.pluginCount;
                             }
-                            else self.isOpend = true;
-                            self.isAnimate = false;
+
+                            isAnimate = false;
                         }
                     }
                 );
-            },
-            setNew: function(){
-                this.current = this.newCurrent;
-                this.link = this.newLink;
-                this.getSize();
-            },
-            hideOld: function(){
-                container.css("top","-9999px").css("left","-9999px");
-                container.width("0px").height("0px");
-                container.html("");
-                this.isOpend = false;
-            }
-        };
+            };
 
-        func.init();
+            var setNew = function(){
+                $current = $newCurrent;
+                link = newLink;
+                getSize();
+            };
+
+            var hideOld = function(){
+                $container.css("top","-9999px").css("left","-9999px");
+                $container.width("0px").height("0px");
+                $container.children("img").remove();
+                isOpen = false;
+                anyOpen = false;
+            };
+
+            var closeOther = function($toOpen){
+                var callback = function(){
+                    $current = $toOpen;
+                    link = $toOpen.prop("href");
+
+                    bindSpec();
+                    getSize();
+                };
+
+                gal[whichOpen].closeZoom(callback);
+            };
+
+
+            bindBase();
+        },
+        close: function(){
+            for(var i = 1; i < gal.length; i++){
+                gal[i].closeZoom();
+            }
+        }
+    };
+
+    $.fn.ionZoom = function(method){
+        if (methods[method]) {
+            return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
+        } else if (typeof method === 'object' || !method) {
+            return methods.init.apply(this, arguments);
+        } else {
+            $.error('Method ' + method + ' does not exist for jQuery.ionZoom');
+        }
     };
 })(jQuery);
-

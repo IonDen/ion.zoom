@@ -1,0 +1,31 @@
+﻿{
+    "name": "ion-zoom",
+    "version": "1.2.63",
+    "title": "Ion Zoom",
+    "description": "Easy image lightbox jQuery plugin for small galleries. Allow to zoom images at place.",
+    "keywords": [
+        "images",
+        "gallery",
+        "pictures",
+        "zoom",
+        "lightbox",
+        "ui"
+    ],
+    "author": {
+        "name": "IonDen",
+        "url": "https://github.com/IonDen"
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "http://ionden.com/a/licence-en.html"
+        }
+    ],
+    "homepage": "https://github.com/IonDen/ion.zoom",
+    "docs": "https://github.com/IonDen/ion.zoom/blob/master/readme.md",
+    "demo": "http://ionden.com/a/plugins/ion.zoom/en.html",
+    "download": "http://ionden.com/a/plugins/ion.zoom/ion.zoom-1.2.zip",
+    "dependencies": {
+        "jquery": ">=1.9"
+    }
+}

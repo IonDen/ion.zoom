@@ -1,16 +1,17 @@
-# Ion.Zoom 1.0
+# Ion.Zoom 1.2
 
 > English description
 
-Easy and light image lightbox. <a href="http://ionden.com/a/plugins/ion.zoom/">Project page and demos</a>
+Easy and light image lightbox. <a href="http://ionden.com/a/plugins/ion.zoom/en.html">Project page and demos</a>
 
-Download: <a href="http://ionden.com/a/plugins/ion.zoom/ion.zoom-1.0.zip">ion.zoom-1.0.zip</a>
+Download: <a href="http://ionden.com/a/plugins/ion.zoom/ion.zoom-1.2.zip">ion.zoom-1.2.zip</a>
 
 ***
 
 ## Description
 ion.zoom — easy image lightbox jQuery plugin for small galleries. Allow to zoom images at place.<br />
 Also supprort keyboard controls with ESC, LEFT and RIGHT button.<br />
+Supports multiple independently operating galleries in one page.<br />
 Works on touch screen devices (iPhone, iPad, etc.).<br />
 Ion.Zoom is freely distributed under <a href="http://ionden.com/a/licence-en.html" target="_blank">MIT licence</a>.
 
@@ -35,10 +36,28 @@ Create gallery:
 <a href="static/img/zoom/zoom-big-03.jpg" class="gallery_1"><img src="static/img/zoom/zoom-small-03.jpg" alt="" /></a>
 ```
 
-Initialize slider:
+Initialize gallery:
 ```javascript
 $(".gallery_1").ionZoom();
 ```
+
+Or initialize gallery with custom settings:
+```javascript
+$(".gallery_2").ionZoom({
+    visibleControls: false                      // disable visible controls
+});
+```
+
+## Public methods:
+
+Close gallery:
+```javascript
+$(".gallery_1").ionZoom("close");
+```
+
+## Update history
+* 08.06.2013 - v1.2: visual controls, multiple galleries, public methods, code optimisations
+
 
 <br />
 <br />
@@ -51,13 +70,14 @@ $(".gallery_1").ionZoom();
 
 Удобный легкий слайдер диапазонов. <a href="http://ionden.com/a/plugins/ion.rangeSlider/">Страница проекта и демо</a>
 
-Скачать: <a href="http://ionden.com/a/plugins/ion.rangeSlider/ion.rangeSlider-1.1.zip">ion.rangeSlider-1.1.zip</a>
+Скачать: <a href="http://ionden.com/a/plugins/ion.rangeSlider/ion.rangeSlider-1.2.zip">ion.rangeSlider-1.2.zip</a>
 
 ***
 
 ## Описание
 ion.zoom — быстрый и легкий лайтбокс плагин для небольших галерей. Позволяет увеличивать картинки на месте.<br />
 Помимо управления мышью поддерживает так же управление с клавиатуры с помощью клавиш ESC, LEFT и RIGHT.<br />
+Поддерживает несколько независимо работающих галерей на одной странице.<br />
 Плагин поддерживает устройства с touch-экраном (iPhone, iPad, etc.).<br />
 Ion.Zoom свободно распространяется на условиях <a href="http://ionden.com/a/licence.html" target="_blank">лицензии MIT</a>.
 
@@ -83,7 +103,24 @@ Ion.Zoom свободно распространяется на условиях
 <a href="static/img/zoom/zoom-big-03.jpg" class="gallery_1"><img src="static/img/zoom/zoom-small-03.jpg" alt="" /></a>
 ```
 
-Инициализируем слайдер:
+Инициализируем галерею:
 ```javascript
 $(".gallery_1").ionZoom();
 ```
+
+Или инициализируем галерею с настройками:
+```javascript
+$(".gallery_2").ionZoom({
+    visibleControls: false                      // отключить визуальные элементы управления
+});
+```
+
+## Публичные методы:
+
+Закрыть галерею:
+```javascript
+$(".gallery_1").ionZoom("close");
+```
+
+## Update history
+* 08.06.2013 - v1.2: визуальыне элементы управления, несколько галерей на странице, публичные методы, оптимизация кода
