@@ -1,20 +1,24 @@
-# Ion.Zoom 1.2
+![ion.zoom](_tmp/logo-ion-zoom.png)
 
-> English description
+> English description | <a href="readme.ru.md">Описание на русском</a>
 
-Easy and light image lightbox. <a href="http://ionden.com/a/plugins/ion.zoom/en.html">Project page and demos</a>
-
-Download: <a href="http://ionden.com/a/plugins/ion.zoom/ion.zoom-1.2.zip">ion.zoom-1.2.zip</a>
+Easy and light image lightbox for small galleries.
 
 ***
 
+* Version: 1.2.0
+* <a href="http://ionden.com/a/plugins/ion.zoom/en.html">Project page and demos</a>
+* <a href="http://ionden.com/a/plugins/ion.zoom/ion.zoom-1.2.zip">Download ZIP</a>
+
+[![](https://pledgie.com/campaigns/25694.png?skin_name=chrome)](https://pledgie.com/campaigns/25694)
+
 ## Description
-ion.zoom — easy image lightbox jQuery plugin for small galleries. Allow to zoom images at place.<br />
-Supports keyboard controls with ESC, LEFT and RIGHT button.<br />
-Supports multiple independently operating galleries in one page.<br />
-Crossbrowser: Google Chrome, Mozilla Firefox, Opera, Safari, IE(8.0+)<br />
-Works on touch screen devices (iPhone, iPad, etc.).<br />
-Ion.Zoom is freely distributed under <a href="http://ionden.com/a/plugins/licence-en.html" target="_blank">MIT licence</a>.
+* ion.zoom — easy image lightbox jQuery plugin for small galleries. Allow to zoom images at place.<br />
+* Supports keyboard controls with ESC, LEFT and RIGHT button.<br />
+* Supports multiple independently operating galleries in one page.<br />
+* Crossbrowser: Google Chrome, Mozilla Firefox, Opera, Safari, IE(8.0+)<br />
+* Works on touch screen devices (iPhone, iPad, etc.).<br />
+* Ion.Zoom is freely distributed under <a href="http://ionden.com/a/plugins/licence-en.html" target="_blank">MIT licence</a>.
 
 
 ## Dependencies
@@ -56,73 +60,10 @@ Close gallery:
 $(".gallery_1").ionZoom("close");
 ```
 
-## Update history
-* 08.06.2013 - v1.2: visual controls, multiple galleries, public methods, code optimisations
-
-
-<br />
-<br />
-***
-<br />
-<br />
-
-
-> Описание на русском
-
-Удобный легкий слайдер диапазонов. <a href="http://ionden.com/a/plugins/ion.rangeSlider/">Страница проекта и демо</a>
-
-Скачать: <a href="http://ionden.com/a/plugins/ion.rangeSlider/ion.rangeSlider-1.2.zip">ion.rangeSlider-1.2.zip</a>
+### <a href="history.md">Update history</a>
 
 ***
 
-## Описание
-ion.zoom — быстрый и легкий лайтбокс плагин для небольших галерей. Позволяет увеличивать картинки на месте.<br />
-Помимо управления мышью поддерживает так же управление с клавиатуры с помощью клавиш ESC, LEFT и RIGHT.<br />
-Поддерживает несколько независимо работающих галерей на одной странице.<br />
-Кроссбраузерная поддержка: Google Chrome, Mozilla Firefox, Opera, Safari, IE(8.0+)<br />
-Плагин поддерживает устройства с touch-экраном (iPhone, iPad, etc.).<br />
-Ion.Zoom свободно распространяется на условиях <a href="http://ionden.com/a/plugins/licence.html" target="_blank">лицензии MIT</a>.
+Support the plugin:
 
-
-## Зависимости
-* <a href="http://jquery.com/" target="_blank">jQuery 1.9+</a>
-
-
-## Подключение
-
-Подключаем библиотеки:
-* jQuery
-* ion.zoom.min.js
-
-И CSS:
-* normalize.min.css - желательно, если он у вас еще не подключен
-* ion.zoom.css
-
-Создаем галерею:
-```html
-<a href="static/img/zoom/zoom-big-01.jpg" class="gallery_1"><img src="static/img/zoom/zoom-small-01.jpg" alt="" /></a>
-<a href="static/img/zoom/zoom-big-02.jpg" class="gallery_1"><img src="static/img/zoom/zoom-small-02.jpg" alt="" /></a>
-<a href="static/img/zoom/zoom-big-03.jpg" class="gallery_1"><img src="static/img/zoom/zoom-small-03.jpg" alt="" /></a>
-```
-
-Инициализируем галерею:
-```javascript
-$(".gallery_1").ionZoom();
-```
-
-Или инициализируем галерею с настройками:
-```javascript
-$(".gallery_2").ionZoom({
-    visibleControls: false                      // отключить визуальные элементы управления
-});
-```
-
-## Публичные методы:
-
-Закрыть галерею:
-```javascript
-$(".gallery_1").ionZoom("close");
-```
-
-## Update history
-* 08.06.2013 - v1.2: визуальыне элементы управления, несколько галерей на странице, публичные методы, оптимизация кода
+[![](https://pledgie.com/campaigns/25694.png?skin_name=chrome)](https://pledgie.com/campaigns/25694)
