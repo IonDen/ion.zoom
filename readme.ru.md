@@ -10,8 +10,6 @@
 * <a href="http://ionden.com/a/plugins/ion.rangeSlider/">Страница проекта и демо</a>
 * <a href="http://ionden.com/a/plugins/ion.rangeSlider/ion.rangeSlider-1.2.zip">Скачать ZIP-архив</a>
 
-[![](https://pledgie.com/campaigns/25694.png?skin_name=chrome)](https://pledgie.com/campaigns/25694)
-
 ## Описание
 * ion.zoom — быстрый и легкий лайтбокс плагин для небольших галерей. Позволяет увеличивать картинки на месте.<br />
 * Помимо управления мышью поддерживает так же управление с клавиатуры с помощью клавиш ESC, LEFT и RIGHT.<br />
@@ -65,6 +63,10 @@ $(".gallery_1").ionZoom("close");
 
 ***
 
-Поддержите плагин:
+#### Поддержите разработку плагинов серии Ion:
 
-[![](https://pledgie.com/campaigns/25694.png?skin_name=chrome)](https://pledgie.com/campaigns/25694)
+* Пожертвовать через сервис Pledgie: [![](https://pledgie.com/campaigns/25694.png?skin_name=chrome)](https://pledgie.com/campaigns/25694)
+
+* Пожертвовать напрямую через Paypal: https://www.paypal.me/IonDen
+
+* Пожертвовать напрямую через Яндекс.Деньги: http://yasobe.ru/na/razrabotku
